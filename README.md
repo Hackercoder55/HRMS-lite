@@ -1,137 +1,223 @@
 # HRMS Lite
 
-A lightweight Human Resource Management System for managing employees and tracking daily attendance.
+HRMS Lite is a simple and clean **Human Resource Management System** built to manage employees and track daily attendance without unnecessary complexity. This project was created as an academic and practical exercise to understand full‑stack development, real‑world CRUD flows, and deployment on modern platforms.
 
-**Developed by:** Santosh Kumar  
-**College:** KR Mangalam University
+The goal was to build something that *actually works end‑to‑end* — from adding an employee to marking attendance and seeing live stats on a dashboard.
 
-![Node.js](https://img.shields.io/badge/Node.js-18+-green)
-![React](https://img.shields.io/badge/React-18-blue)
-![License](https://img.shields.io/badge/License-MIT-yellow)
+---
 
-## Live Demo
+## 👨‍💻 Project Details
 
-- **Frontend:** [https://hrms-lite.vercel.app](https://hrms-lite.vercel.app)
-- **Backend API:** [https://hrms-lite-api-rl5y.onrender.com](https://hrms-lite-api-rl5y.onrender.com)
+* **Developer:** Santosh Kumar
+* **Roll Number:** 2301010205
+* **University:** KR Mangalam University
+* **Project Type:** Academic / Portfolio Project
 
-## Features
+---
 
-- **Employee Management** - Add, view, and delete employees
-- **Attendance Tracking** - Mark daily attendance (Present/Absent)
-- **Dashboard** - Overview with statistics and summaries
-- **Date Filtering** - View attendance by specific dates
-- **Responsive Design** - Works on desktop and mobile
+## 🌐 Live Preview
 
-## Tech Stack
+* **Frontend (Vercel):** [https://hrms-lite-flame.vercel.app](https://hrms-lite-flame.vercel.app)
+* **Backend API (Render):** [https://hrms-lite-api-rl5y.onrender.com](https://hrms-lite-api-rl5y.onrender.com)
 
-| Layer | Technology |
-|-------|------------|
-| Frontend | React 18, Vite, Tailwind CSS |
-| Backend | Node.js, Express |
-| Database | SQLite (sql.js) |
-| Styling | Tailwind CSS |
+> ℹ️ Note: The backend is hosted on Render (free tier), so the first request may take a few seconds to wake up.
 
-## Quick Start
+---
 
-### Prerequisites
+## ✨ Features
 
-- Node.js 18+
-- npm or yarn
+* **Employee Management**
+  Add, view, and remove employee records easily.
 
-### Installation
+* **Attendance Management**
+  Mark employees as Present or Absent for a selected date.
 
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/Hackercoder55/HRMS-lite.git
-   cd HRMS-lite
-   ```
+* **Dashboard Overview**
+  Live summary showing total employees, today’s attendance, and recent activity.
 
-2. **Install backend dependencies**
-   ```bash
-   cd server
-   npm install
-   ```
+* **Department-wise Organization**
+  Employees are grouped into departments like Engineering, HR, Marketing, etc.
 
-3. **Install frontend dependencies**
-   ```bash
-   cd ../client
-   npm install
-   ```
+* **Clean & Responsive UI**
+  Works smoothly on desktop and mobile screens.
 
-### Running Locally
+---
 
-1. **Start the backend server** (from `server` folder)
-   ```bash
-   npm run dev
-   ```
-   Backend runs on `http://localhost:5000`
+## 🛠️ Tech Stack
 
-2. **Start the frontend** (from `client` folder, in a new terminal)
-   ```bash
-   npm run dev
-   ```
-   Frontend runs on `http://localhost:5173`
+| Layer    | Technology                          |
+| -------- | ----------------------------------- |
+| Frontend | React 18, Vite, Tailwind CSS        |
+| Backend  | Node.js, Express                    |
+| Database | SQLite (via sql.js)                 |
+| Hosting  | Vercel (Frontend), Render (Backend) |
 
-3. **Open your browser** and go to `http://localhost:5173`
+---
 
-## API Endpoints
-
-### Employees
-
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/api/employees` | List all employees |
-| GET | `/api/employees/:id` | Get single employee |
-| POST | `/api/employees` | Create employee |
-| DELETE | `/api/employees/:id` | Delete employee |
-
-### Attendance
-
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/api/attendance` | List all records (with filters) |
-| GET | `/api/attendance/employee/:id` | Get employee's attendance |
-| GET | `/api/attendance/stats` | Dashboard statistics |
-| POST | `/api/attendance` | Mark attendance |
-
-## Project Structure
+## 📁 Project Structure
 
 ```
-hrms-lite/
+HRMS-lite/
 ├── server/                 # Backend
-│   ├── db/
-│   │   └── database.js     # SQLite setup
-│   ├── routes/
-│   │   ├── employees.js    # Employee endpoints
-│   │   └── attendance.js   # Attendance endpoints
-│   ├── middleware/
-│   │   └── validation.js   # Request validation
-│   └── server.js           # Express app
+│   ├── db/                 # SQLite setup
+│   ├── routes/             # API routes
+│   ├── middleware/         # Validation & helpers
+│   └── server.js           # Express server entry
 │
-├── client/                 # Frontend
+├── client/                 # Frontend (React + Vite)
 │   ├── src/
-│   │   ├── api/            # API client
-│   │   ├── components/     # Reusable components
-│   │   ├── pages/          # Page components
-│   │   ├── App.jsx         # Main app
-│   │   └── index.css       # Styles
+│   │   ├── api/             # API calls
+│   │   ├── components/      # Reusable UI components
+│   │   ├── pages/           # Dashboard, Employees, Attendance
+│   │   └── App.jsx
 │   └── index.html
 │
 └── README.md
 ```
 
-## Assumptions & Limitations
+---
 
-- Single admin user (no authentication)
-- SQLite database (not suitable for high concurrency)
-- Data persists in memory for deployed version
-- No pagination (suitable for small datasets)
+## 🚀 Running the Project Locally
 
-## Author
+### Prerequisites
 
-**Santosh Kumar**  
+* Node.js (v18 or higher)
+* npm (or yarn)
+
+### 1️⃣ Clone the Repository
+
+```bash
+git clone https://github.com/Hackercoder55/HRMS-lite.git
+cd HRMS-lite
+```
+
+### 2️⃣ Backend Setup
+
+```bash
+cd server
+npm install
+npm run dev
+```
+
+Backend will start at:
+
+```
+http://localhost:5000
+```
+
+### 3️⃣ Frontend Setup
+
+Open a new terminal:
+
+```bash
+cd client
+npm install
+npm run dev
+```
+
+Frontend will start at:
+
+```
+http://localhost:5173
+```
+
+---
+
+## 🔌 API Endpoints
+
+### Employees
+
+| Method | Endpoint           | Description        |
+| ------ | ------------------ | ------------------ |
+| GET    | /api/employees     | Get all employees  |
+| GET    | /api/employees/:id | Get employee by ID |
+| POST   | /api/employees     | Add new employee   |
+| DELETE | /api/employees/:id | Remove employee    |
+
+### Attendance
+
+| Method | Endpoint                     | Description            |
+| ------ | ---------------------------- | ---------------------- |
+| GET    | /api/attendance              | Get attendance records |
+| GET    | /api/attendance/employee/:id | Employee attendance    |
+| GET    | /api/attendance/stats        | Dashboard stats        |
+| POST   | /api/attendance              | Mark attendance        |
+
+---
+
+## 🌍 Deployment Guide
+
+### Backend Deployment (Render)
+
+1. Login to **Render** and create a new **Web Service**
+2. Connect GitHub repo: `Hackercoder55/HRMS-lite`
+3. Set **Root Directory** to `server`
+4. Build Command:
+
+   ```
+   npm install
+   ```
+5. Start Command:
+
+   ```
+   node server.js
+   ```
+6. Add Environment Variable:
+
+   ```
+   FRONTEND_URL=https://hrms-lite-flame.vercel.app
+   ```
+
+---
+
+### Frontend Deployment (Vercel)
+
+1. Login to **Vercel** and import the repository
+2. Set **Root Directory** to `client`
+3. Framework preset: **Vite**
+4. Add Environment Variable:
+
+   ```
+   VITE_API_URL=https://hrms-lite-api-rl5y.onrender.com/api
+   ```
+5. Deploy 🎉
+
+6. Dashboard:
+7. <img width="1918" height="932" alt="image" src="https://github.com/user-attachments/assets/edf573d1-600a-4259-9559-8bddfc7d52a8" />
+8. Employee Dashboard:
+9. <img width="1919" height="934" alt="image" src="https://github.com/user-attachments/assets/c0e6d1c3-db99-4c15-aac6-adda2045e885" />
+10. Add Employee:
+11. <img width="540" height="579" alt="image" src="https://github.com/user-attachments/assets/209d7eae-06b2-4e55-be7b-bec3ebdb6c96" />
+12. Mark Attendance:
+13. <img width="1910" height="922" alt="image" src="https://github.com/user-attachments/assets/462d5796-be1e-444f-b440-f43c83a12c29" />
+14. Check Dashboard:
+15. <img width="1914" height="934" alt="image" src="https://github.com/user-attachments/assets/d3fa7452-2bbd-4b8d-a77c-1591e4ac339b" />
+
+
+
+
+
+---
+
+## ⚠️ Assumptions & Limitations
+
+* Single admin user (no authentication)
+* SQLite database (not designed for heavy concurrency)
+* Suitable for small teams and academic use
+* No pagination or role-based access
+
+---
+
+## 📜 License & Copyright
+
+MIT License
+
+© 2026 **Santosh Kumar**
+Roll No: **2301010205**
 KR Mangalam University
 
-## License
+You are free to use, modify, and distribute this project for learning and non‑commercial purposes.
 
-MIT License - feel free to use for any purpose.
+---
+
+If you’re reviewing this project — thank you for your time 🙏
