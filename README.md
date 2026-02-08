@@ -2,9 +2,17 @@
 
 A lightweight Human Resource Management System for managing employees and tracking daily attendance.
 
+**Developed by:** Santosh Kumar  
+**College:** KR Mangalam University
+
 ![Node.js](https://img.shields.io/badge/Node.js-18+-green)
 ![React](https://img.shields.io/badge/React-18-blue)
 ![License](https://img.shields.io/badge/License-MIT-yellow)
+
+## Live Demo
+
+- **Frontend:** [https://hrms-lite.vercel.app](https://hrms-lite.vercel.app)
+- **Backend API:** [https://hrms-lite-api-rl5y.onrender.com](https://hrms-lite-api-rl5y.onrender.com)
 
 ## Features
 
@@ -18,10 +26,10 @@ A lightweight Human Resource Management System for managing employees and tracki
 
 | Layer | Technology |
 |-------|------------|
-| Frontend | React 18, Vite, Lucide Icons |
+| Frontend | React 18, Vite, Tailwind CSS |
 | Backend | Node.js, Express |
 | Database | SQLite (sql.js) |
-| Styling | Vanilla CSS (Glassmorphism theme) |
+| Styling | Tailwind CSS |
 
 ## Quick Start
 
@@ -34,8 +42,8 @@ A lightweight Human Resource Management System for managing employees and tracki
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/yourusername/hrms-lite.git
-   cd hrms-lite
+   git clone https://github.com/Hackercoder55/HRMS-lite.git
+   cd HRMS-lite
    ```
 
 2. **Install backend dependencies**
@@ -86,11 +94,6 @@ A lightweight Human Resource Management System for managing employees and tracki
 | GET | `/api/attendance/stats` | Dashboard statistics |
 | POST | `/api/attendance` | Mark attendance |
 
-**Query Parameters for filtering:**
-- `date` - Filter by specific date (YYYY-MM-DD)
-- `from` / `to` - Date range filtering
-- `employee_id` - Filter by employee
-
 ## Project Structure
 
 ```
@@ -117,45 +120,17 @@ hrms-lite/
 └── README.md
 ```
 
-## Deployment
-
-### Frontend (Vercel)
-
-1. Push code to GitHub
-2. Import repo in Vercel
-3. Set root directory to `client`
-4. Add environment variable: `VITE_API_URL=<your-backend-url>/api`
-5. Deploy
-
-### Backend (Render)
-
-1. Push code to GitHub
-2. Create new Web Service on Render
-3. Set root directory to `server`
-4. Build command: `npm install`
-5. Start command: `node server.js`
-6. Add environment variable: `FRONTEND_URL=<your-frontend-url>`
-7. Deploy
-
-## Environment Variables
-
-**Backend (`server/.env`):**
-```env
-PORT=5000
-FRONTEND_URL=http://localhost:5173
-```
-
-**Frontend (`client/.env`):**
-```env
-VITE_API_URL=http://localhost:5000/api
-```
-
 ## Assumptions & Limitations
 
 - Single admin user (no authentication)
 - SQLite database (not suitable for high concurrency)
-- Data persists in `server/db/hrms.db` file
+- Data persists in memory for deployed version
 - No pagination (suitable for small datasets)
+
+## Author
+
+**Santosh Kumar**  
+KR Mangalam University
 
 ## License
 

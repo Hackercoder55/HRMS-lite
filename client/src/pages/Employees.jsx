@@ -1,3 +1,8 @@
+/*
+ * Employees page - manage employee records
+ * by Santosh Kumar
+ */
+
 import { useState, useEffect } from 'react';
 import { employeeApi } from '../api';
 import { useToast } from '../App';
@@ -29,7 +34,7 @@ function Employees() {
             const res = await employeeApi.getAll();
             setEmployees(res.data);
         } catch (err) {
-            showToast(err.message || 'Failed to load employees', 'error');
+            showToast(err.message || 'Failed to load', 'error');
         } finally {
             setLoading(false);
         }
@@ -62,7 +67,7 @@ function Employees() {
                 err.errors.forEach(e => { errors[e.field] = e.message; });
                 setFormErrors(errors);
             } else {
-                showToast(err.message || 'Failed to add employee', 'error');
+                showToast(err.message || 'Failed', 'error');
             }
         } finally {
             setSubmitting(false);
@@ -70,168 +75,177 @@ function Employees() {
     }
 
     async function handleDelete(id, name) {
-        if (!confirm(`Delete ${name}? This will also remove their attendance records.`)) {
-            return;
-        }
+        if (!confirm(`Delete ${name}?`)) return;
 
         try {
             await employeeApi.delete(id);
             showToast('Employee deleted');
             loadEmployees();
         } catch (err) {
-            showToast(err.message || 'Failed to delete', 'error');
+            showToast(err.message || 'Failed', 'error');
         }
     }
 
-    // search filter
     const filtered = employees.filter(emp =>
         emp.full_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         emp.employee_id.toLowerCase().includes(searchTerm.toLowerCase()) ||
         emp.department.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
-    // dept badge colors
     const getDeptColor = (dept) => {
-        const colors = {
-            'Engineering': 'blue',
-            'HR': 'purple',
-            'Human Resources': 'purple',
-            'Marketing': 'pink',
-            'Sales': 'emerald',
-            'Support': 'amber',
-        };
-        return colors[dept] || 'slate';
+        const d = dept.toLowerCase();
+        if (d.includes('engineer')) return 'bg-blue-50 text-blue-600 border-blue-100';
+        if (d.includes('hr') || d.includes('human')) return 'bg-purple-50 text-purple-600 border-purple-100';
+        if (d.includes('market')) return 'bg-pink-50 text-pink-600 border-pink-100';
+        if (d.includes('sales')) return 'bg-green-50 text-green-600 border-green-100';
+        return 'bg-slate-50 text-slate-600 border-slate-100';
     };
+
+    if (loading) {
+        return (
+            <div className="space-y-6">
+                <div>
+                    <h1 className="text-2xl font-bold text-slate-800">Employee Directory</h1>
+                    <p className="text-slate-500 text-sm mt-1">Manage your organization's employee records and profiles.</p>
+                </div>
+                <div className="flex items-center justify-center py-20">
+                    <div className="h-8 w-8 animate-spin rounded-full border-4 border-blue-500 border-t-transparent"></div>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="space-y-6">
-            {/* Breadcrumbs */}
-            <div className="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400">
-                <span>Dashboard</span>
-                <span className="material-symbols-outlined text-sm">chevron_right</span>
-                <span className="text-primary font-medium">Employees</span>
-            </div>
-
-            {/* Page Header */}
-            <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
+            {/* header */}
+            <div className="flex flex-wrap items-center justify-between gap-4">
                 <div>
-                    <h2 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-white">Employee Directory</h2>
-                    <p className="mt-1 text-slate-500 dark:text-slate-400">Manage your organization's employee records and profiles.</p>
+                    <h1 className="text-2xl font-bold text-slate-800">Employee Directory</h1>
+                    <p className="text-slate-500 text-sm mt-1">Manage your organization's employee records and profiles.</p>
                 </div>
                 <button
-                    className="inline-flex items-center justify-center gap-2 rounded-lg bg-primary px-5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-blue-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary transition-all active:scale-95"
                     onClick={openModal}
+                    className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2.5 rounded-lg font-medium text-sm flex items-center gap-2"
                 >
-                    <span className="material-symbols-outlined text-[20px]">add</span>
+                    <span className="material-symbols-outlined text-lg">add</span>
                     Add Employee
                 </button>
             </div>
 
-            {/* Stats Overview */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm dark:bg-slate-900 dark:border-slate-800">
-                    <div className="flex items-center justify-between">
-                        <p className="text-sm font-medium text-slate-500 dark:text-slate-400">Total Employees</p>
-                        <span className="material-symbols-outlined text-slate-400">group</span>
-                    </div>
-                    <div className="mt-4 flex items-baseline gap-2">
-                        <span className="text-3xl font-bold text-slate-900 dark:text-white">{employees.length}</span>
+            {/* stat cards */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div className="bg-white rounded-xl border border-slate-200 p-4">
+                    <div className="flex justify-between items-start">
+                        <div>
+                            <p className="text-slate-500 text-sm">Total Employees</p>
+                            <h2 className="text-2xl font-bold text-slate-800 mt-1">{employees.length}</h2>
+                        </div>
+                        <span className="material-symbols-outlined text-slate-400">people</span>
                     </div>
                 </div>
-                <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm dark:bg-slate-900 dark:border-slate-800">
-                    <div className="flex items-center justify-between">
-                        <p className="text-sm font-medium text-slate-500 dark:text-slate-400">Departments</p>
+                <div className="bg-white rounded-xl border border-slate-200 p-4">
+                    <div className="flex justify-between items-start">
+                        <div>
+                            <p className="text-slate-500 text-sm">New Hires</p>
+                            <h2 className="text-2xl font-bold text-slate-800 mt-1">{Math.min(employees.length, 5)}</h2>
+                        </div>
+                        <span className="material-symbols-outlined text-slate-400">person_add</span>
+                    </div>
+                </div>
+                <div className="bg-white rounded-xl border border-slate-200 p-4">
+                    <div className="flex justify-between items-start">
+                        <div>
+                            <p className="text-slate-500 text-sm">Departments</p>
+                            <h2 className="text-2xl font-bold text-slate-800 mt-1">{new Set(employees.map(e => e.department)).size}</h2>
+                        </div>
                         <span className="material-symbols-outlined text-slate-400">domain</span>
                     </div>
-                    <div className="mt-4 flex items-baseline gap-2">
-                        <span className="text-3xl font-bold text-slate-900 dark:text-white">
-                            {new Set(employees.map(e => e.department)).size}
-                        </span>
-                        <span className="text-sm font-medium text-slate-500 dark:text-slate-400">Active</span>
+                </div>
+                <div className="bg-white rounded-xl border border-slate-200 p-4">
+                    <div className="flex justify-between items-start">
+                        <div>
+                            <p className="text-slate-500 text-sm">Active</p>
+                            <h2 className="text-2xl font-bold text-slate-800 mt-1">{employees.length}</h2>
+                        </div>
+                        <span className="material-symbols-outlined text-slate-400">verified</span>
                     </div>
                 </div>
             </div>
 
-            {/* Table Controls */}
-            <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
-                <div className="relative w-full sm:max-w-xs">
-                    <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
-                        <span className="material-symbols-outlined text-[20px]">search</span>
-                    </div>
+            {/* search bar */}
+            <div className="flex items-center gap-4">
+                <div className="relative flex-1 max-w-md">
+                    <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xl">search</span>
                     <input
-                        className="block w-full rounded-lg border-0 bg-white py-2.5 pl-10 pr-3 text-slate-900 ring-1 ring-inset ring-slate-200 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6 dark:bg-slate-900 dark:ring-slate-800 dark:text-white dark:placeholder:text-slate-600"
-                        placeholder="Search employees..."
                         type="text"
+                        placeholder="Search employees..."
+                        className="w-full pl-10 pr-4 py-2.5 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                         value={searchTerm}
                         onChange={e => setSearchTerm(e.target.value)}
                     />
                 </div>
+                <button className="px-4 py-2.5 border border-slate-200 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-50 flex items-center gap-2">
+                    <span className="material-symbols-outlined text-lg">filter_list</span>
+                    Filter
+                </button>
             </div>
 
-            {/* Data Table */}
-            <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm dark:bg-slate-900 dark:border-slate-800">
-                {loading ? (
-                    <div className="flex items-center justify-center py-20">
-                        <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent"></div>
-                    </div>
-                ) : filtered.length === 0 ? (
+            {/* table */}
+            <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
+                {filtered.length === 0 ? (
                     <div className="p-12 text-center">
-                        <span className="material-symbols-outlined text-4xl text-slate-300 mb-3">group</span>
-                        <h4 className="text-slate-900 dark:text-white font-medium mb-1">
-                            {searchTerm ? 'No results found' : 'No employees yet'}
-                        </h4>
-                        <p className="text-sm text-slate-500">
-                            {searchTerm ? 'Try a different search' : 'Click "Add Employee" to get started'}
-                        </p>
+                        <span className="material-symbols-outlined text-4xl text-slate-300 mb-2">group</span>
+                        <p className="text-slate-800 font-medium">No employees found</p>
+                        <p className="text-slate-500 text-sm">{employees.length === 0 ? 'Add your first employee' : 'Try a different search'}</p>
                     </div>
                 ) : (
                     <div className="overflow-x-auto">
-                        <table className="w-full text-left text-sm text-slate-500 dark:text-slate-400">
-                            <thead className="bg-slate-50 text-xs uppercase text-slate-500 dark:bg-slate-800/50 dark:text-slate-400">
+                        <table className="w-full text-left text-sm">
+                            <thead className="bg-slate-50 text-xs uppercase text-slate-500 border-b border-slate-100">
                                 <tr>
-                                    <th className="px-6 py-4 font-semibold w-32" scope="col">ID</th>
-                                    <th className="px-6 py-4 font-semibold" scope="col">Full Name</th>
-                                    <th className="px-6 py-4 font-semibold" scope="col">Email Address</th>
-                                    <th className="px-6 py-4 font-semibold" scope="col">Department</th>
-                                    <th className="px-6 py-4 font-semibold" scope="col">Status</th>
-                                    <th className="px-6 py-4 font-semibold text-right w-24" scope="col">Actions</th>
+                                    <th className="px-5 py-3 font-medium">ID</th>
+                                    <th className="px-5 py-3 font-medium">Full Name</th>
+                                    <th className="px-5 py-3 font-medium">Email Address</th>
+                                    <th className="px-5 py-3 font-medium">Department</th>
+                                    <th className="px-5 py-3 font-medium">Status</th>
+                                    <th className="px-5 py-3 font-medium">Actions</th>
                                 </tr>
                             </thead>
-                            <tbody className="divide-y divide-slate-100 border-t border-slate-100 dark:divide-slate-800 dark:border-slate-800">
+                            <tbody className="divide-y divide-slate-100">
                                 {filtered.map(emp => {
                                     const initials = emp.full_name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase();
-                                    const color = getDeptColor(emp.department);
+                                    const colors = ['bg-teal-100 text-teal-600', 'bg-orange-100 text-orange-600', 'bg-yellow-100 text-yellow-600', 'bg-purple-100 text-purple-600'];
+                                    const colorIdx = emp.full_name.length % colors.length;
 
                                     return (
-                                        <tr key={emp.employee_id} className="hover:bg-blue-50/50 dark:hover:bg-blue-900/10 transition-colors">
-                                            <td className="px-6 py-4 font-mono text-slate-500 text-xs">{emp.employee_id}</td>
-                                            <td className="px-6 py-4">
+                                        <tr key={emp.id} className="hover:bg-slate-50">
+                                            <td className="px-5 py-4 text-slate-500">{emp.employee_id}</td>
+                                            <td className="px-5 py-4">
                                                 <div className="flex items-center gap-3">
-                                                    <div className="h-8 w-8 rounded-full bg-slate-100 flex items-center justify-center text-xs font-medium text-slate-600 dark:bg-slate-800 dark:text-slate-300">
+                                                    <div className={`h-9 w-9 rounded-full flex items-center justify-center text-sm font-medium ${colors[colorIdx]}`}>
                                                         {initials}
                                                     </div>
-                                                    <div className="font-medium text-slate-900 dark:text-white">{emp.full_name}</div>
+                                                    <span className="font-medium text-slate-800">{emp.full_name}</span>
                                                 </div>
                                             </td>
-                                            <td className="px-6 py-4 text-slate-500">{emp.email}</td>
-                                            <td className="px-6 py-4">
-                                                <span className={`inline-flex items-center rounded-md bg-${color}-50 px-2 py-1 text-xs font-medium text-${color}-700 ring-1 ring-inset ring-${color}-700/10 dark:bg-${color}-400/10 dark:text-${color}-400 dark:ring-${color}-400/30`}>
+                                            <td className="px-5 py-4 text-slate-600">{emp.email}</td>
+                                            <td className="px-5 py-4">
+                                                <span className={`px-2.5 py-1 rounded-md text-xs font-medium border ${getDeptColor(emp.department)}`}>
                                                     {emp.department}
                                                 </span>
                                             </td>
-                                            <td className="px-6 py-4">
-                                                <div className="flex items-center gap-2">
-                                                    <div className="h-2 w-2 rounded-full bg-green-500"></div>
-                                                    <span>Active</span>
-                                                </div>
+                                            <td className="px-5 py-4">
+                                                <span className="flex items-center gap-1.5">
+                                                    <span className="h-2 w-2 rounded-full bg-green-500"></span>
+                                                    <span className="text-green-600 text-sm">Active</span>
+                                                </span>
                                             </td>
-                                            <td className="px-6 py-4 text-right">
+                                            <td className="px-5 py-4">
                                                 <button
-                                                    className="text-slate-400 hover:text-red-500 transition-colors p-1 rounded hover:bg-red-50 dark:hover:bg-red-900/20"
-                                                    title="Delete Employee"
                                                     onClick={() => handleDelete(emp.employee_id, emp.full_name)}
+                                                    className="text-slate-400 hover:text-red-500"
                                                 >
-                                                    <span className="material-symbols-outlined text-[20px]">delete</span>
+                                                    <span className="material-symbols-outlined text-lg">delete</span>
                                                 </button>
                                             </td>
                                         </tr>
@@ -241,114 +255,68 @@ function Employees() {
                         </table>
                     </div>
                 )}
-
-                {/* Pagination */}
-                {!loading && filtered.length > 0 && (
-                    <div className="flex items-center justify-between border-t border-slate-200 bg-white px-4 py-3 sm:px-6 dark:bg-slate-900 dark:border-slate-800">
-                        <div className="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
-                            <div>
-                                <p className="text-sm text-slate-700 dark:text-slate-400">
-                                    Showing <span className="font-medium">1</span> to <span className="font-medium">{filtered.length}</span> of <span className="font-medium">{filtered.length}</span> results
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                )}
             </div>
 
-            {/* Add Employee Modal */}
+            {/* modal */}
             {showModal && (
                 <Modal title="Add New Employee" onClose={closeModal}>
-                    <form onSubmit={handleSubmit}>
-                        {/* Form Body */}
-                        <div className="px-6 py-6">
-                            <div className="flex flex-col gap-5">
-                                {/* ID Field */}
-                                <div>
-                                    <label className="block text-sm font-medium leading-6 text-slate-900 dark:text-slate-200" htmlFor="employee-id">Employee ID</label>
-                                    <div className="mt-2">
-                                        <input
-                                            className={`block w-full rounded-md border-0 py-2.5 text-slate-900 shadow-sm ring-1 ring-inset ${formErrors.employee_id ? 'ring-red-300' : 'ring-slate-300'} placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6 dark:bg-slate-950 dark:ring-slate-700 dark:text-white`}
-                                            id="employee-id"
-                                            placeholder="e.g. EMP-123"
-                                            type="text"
-                                            value={formData.employee_id}
-                                            onChange={e => setFormData({ ...formData, employee_id: e.target.value })}
-                                        />
-                                    </div>
-                                    {formErrors.employee_id && <p className="mt-2 text-sm text-red-600 dark:text-red-400">{formErrors.employee_id}</p>}
-                                </div>
-
-                                {/* Name Field */}
-                                <div>
-                                    <label className="block text-sm font-medium leading-6 text-slate-900 dark:text-slate-200" htmlFor="full-name">Full Name</label>
-                                    <div className="mt-2">
-                                        <input
-                                            className={`block w-full rounded-md border-0 py-2.5 text-slate-900 shadow-sm ring-1 ring-inset ${formErrors.full_name ? 'ring-red-300' : 'ring-slate-300'} placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6 dark:bg-slate-950 dark:ring-slate-700 dark:text-white`}
-                                            id="full-name"
-                                            placeholder="e.g. Jane Doe"
-                                            type="text"
-                                            value={formData.full_name}
-                                            onChange={e => setFormData({ ...formData, full_name: e.target.value })}
-                                        />
-                                    </div>
-                                    {formErrors.full_name && <p className="mt-2 text-sm text-red-600 dark:text-red-400">{formErrors.full_name}</p>}
-                                </div>
-
-                                {/* Email Field */}
-                                <div>
-                                    <label className="block text-sm font-medium leading-6 text-slate-900 dark:text-slate-200" htmlFor="email">Email Address</label>
-                                    <div className="mt-2">
-                                        <input
-                                            className={`block w-full rounded-md border-0 py-2.5 text-slate-900 shadow-sm ring-1 ring-inset ${formErrors.email ? 'ring-red-300' : 'ring-slate-300'} placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6 dark:bg-slate-950 dark:ring-slate-700 dark:text-white`}
-                                            id="email"
-                                            placeholder="you@example.com"
-                                            type="email"
-                                            value={formData.email}
-                                            onChange={e => setFormData({ ...formData, email: e.target.value })}
-                                        />
-                                    </div>
-                                    {formErrors.email && <p className="mt-2 text-sm text-red-600 dark:text-red-400">{formErrors.email}</p>}
-                                </div>
-
-                                {/* Department Field */}
-                                <div>
-                                    <label className="block text-sm font-medium leading-6 text-slate-900 dark:text-slate-200" htmlFor="department">Department</label>
-                                    <div className="mt-2">
-                                        <select
-                                            className={`block w-full rounded-md border-0 py-2.5 text-slate-900 shadow-sm ring-1 ring-inset ${formErrors.department ? 'ring-red-300' : 'ring-slate-300'} focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6 dark:bg-slate-950 dark:ring-slate-700 dark:text-white`}
-                                            id="department"
-                                            value={formData.department}
-                                            onChange={e => setFormData({ ...formData, department: e.target.value })}
-                                        >
-                                            <option value="">Select department</option>
-                                            <option value="Engineering">Engineering</option>
-                                            <option value="Human Resources">Human Resources</option>
-                                            <option value="Marketing">Marketing</option>
-                                            <option value="Sales">Sales</option>
-                                            <option value="Support">Support</option>
-                                        </select>
-                                    </div>
-                                    {formErrors.department && <p className="mt-2 text-sm text-red-600 dark:text-red-400">{formErrors.department}</p>}
-                                </div>
-                            </div>
+                    <form onSubmit={handleSubmit} className="space-y-4">
+                        <div>
+                            <label className="block text-sm font-medium text-slate-700 mb-1">Employee ID</label>
+                            <input
+                                type="text"
+                                className={`w-full px-3 py-2.5 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 ${formErrors.employee_id ? 'border-red-500' : 'border-slate-200'}`}
+                                value={formData.employee_id}
+                                onChange={e => setFormData({ ...formData, employee_id: e.target.value })}
+                                placeholder="EMP-001"
+                            />
+                            {formErrors.employee_id && <p className="text-red-500 text-xs mt-1">{formErrors.employee_id}</p>}
                         </div>
-
-                        {/* Footer Actions */}
-                        <div className="bg-slate-50 px-6 py-4 flex flex-row-reverse gap-3 border-t border-slate-100 dark:bg-slate-800/50 dark:border-slate-800">
-                            <button
-                                className="inline-flex w-full justify-center rounded-md bg-primary px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-600 sm:w-auto transition-colors disabled:opacity-50"
-                                type="submit"
-                                disabled={submitting}
+                        <div>
+                            <label className="block text-sm font-medium text-slate-700 mb-1">Full Name</label>
+                            <input
+                                type="text"
+                                className={`w-full px-3 py-2.5 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 ${formErrors.full_name ? 'border-red-500' : 'border-slate-200'}`}
+                                value={formData.full_name}
+                                onChange={e => setFormData({ ...formData, full_name: e.target.value })}
+                                placeholder="John Doe"
+                            />
+                            {formErrors.full_name && <p className="text-red-500 text-xs mt-1">{formErrors.full_name}</p>}
+                        </div>
+                        <div>
+                            <label className="block text-sm font-medium text-slate-700 mb-1">Email Address</label>
+                            <input
+                                type="email"
+                                className={`w-full px-3 py-2.5 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 ${formErrors.email ? 'border-red-500' : 'border-slate-200'}`}
+                                value={formData.email}
+                                onChange={e => setFormData({ ...formData, email: e.target.value })}
+                                placeholder="john@company.com"
+                            />
+                            {formErrors.email && <p className="text-red-500 text-xs mt-1">{formErrors.email}</p>}
+                        </div>
+                        <div>
+                            <label className="block text-sm font-medium text-slate-700 mb-1">Department</label>
+                            <select
+                                className={`w-full px-3 py-2.5 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 ${formErrors.department ? 'border-red-500' : 'border-slate-200'}`}
+                                value={formData.department}
+                                onChange={e => setFormData({ ...formData, department: e.target.value })}
                             >
-                                {submitting ? 'Saving...' : 'Save Employee'}
-                            </button>
-                            <button
-                                className="inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 hover:bg-slate-50 sm:w-auto dark:bg-slate-800 dark:text-slate-300 dark:ring-slate-700 dark:hover:bg-slate-700 transition-colors"
-                                type="button"
-                                onClick={closeModal}
-                            >
+                                <option value="">Select department</option>
+                                <option value="Engineering">Engineering</option>
+                                <option value="Human Resources">Human Resources</option>
+                                <option value="Marketing">Marketing</option>
+                                <option value="Sales">Sales</option>
+                                <option value="Finance">Finance</option>
+                                <option value="Design">Design</option>
+                            </select>
+                            {formErrors.department && <p className="text-red-500 text-xs mt-1">{formErrors.department}</p>}
+                        </div>
+                        <div className="flex gap-3 pt-2">
+                            <button type="button" onClick={closeModal} className="flex-1 px-4 py-2.5 border border-slate-200 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-50">
                                 Cancel
+                            </button>
+                            <button type="submit" disabled={submitting} className="flex-1 px-4 py-2.5 bg-blue-500 text-white rounded-lg text-sm font-medium hover:bg-blue-600 disabled:opacity-50">
+                                {submitting ? 'Saving...' : 'Save Employee'}
                             </button>
                         </div>
                     </form>

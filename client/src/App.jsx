@@ -1,3 +1,12 @@
+/*
+ * HRMS Lite - Human Resource Management System
+ * 
+ * Developed by: Santosh Kumar
+ * College: KR Mangalam University
+ * 
+ * A lightweight HRMS for managing employees and attendance
+ */
+
 import { useState } from 'react';
 import { createContext, useContext } from 'react';
 import './index.css';
@@ -14,6 +23,9 @@ export function useToast() {
   return useContext(ToastContext);
 }
 
+// also export navigation context so dashboard can switch pages
+export const NavigationContext = createContext();
+
 function App() {
   const [currentPage, setCurrentPage] = useState('dashboard');
   const [toasts, setToasts] = useState([]);
@@ -21,7 +33,6 @@ function App() {
   const showToast = (message, type = 'success') => {
     const id = Date.now();
     setToasts(prev => [...prev, { id, message, type }]);
-    // auto dismiss
     setTimeout(() => {
       setToasts(prev => prev.filter(t => t.id !== id));
     }, 3000);
@@ -38,32 +49,35 @@ function App() {
 
   return (
     <ToastContext.Provider value={showToast}>
-      <div className="relative flex min-h-screen w-full flex-row overflow-hidden bg-background-light dark:bg-background-dark">
-        <Sidebar currentPage={currentPage} onNavigate={setCurrentPage} />
+      <NavigationContext.Provider value={setCurrentPage}>
+        <div className="flex min-h-screen bg-slate-50">
+          <Sidebar currentPage={currentPage} onNavigate={setCurrentPage} />
 
-        <main className="flex-1 flex flex-col min-h-screen overflow-y-auto">
-          {/* mobile header */}
-          <header className="flex lg:hidden items-center justify-between p-4 bg-white border-b border-slate-200 dark:bg-slate-900 dark:border-slate-800">
-            <div className="flex items-center gap-2 font-bold text-lg text-slate-900 dark:text-white">
-              <span className="text-primary material-symbols-outlined">dataset</span> HRMS Lite
+          <main className="flex-1 flex flex-col min-h-screen">
+            {/* mobile header */}
+            <header className="flex lg:hidden items-center justify-between p-4 bg-white border-b border-slate-200">
+              <div className="flex items-center gap-2 font-semibold text-slate-800">
+                <div className="bg-blue-500 rounded-lg h-8 w-8 flex items-center justify-center text-white font-bold text-sm">HR</div>
+                HRMS Lite
+              </div>
+              <button className="p-2 text-slate-600">
+                <span className="material-symbols-outlined">menu</span>
+              </button>
+            </header>
+
+            <div className="flex-1 p-6 lg:p-8">
+              {renderPage()}
             </div>
-            <button className="p-2 text-slate-600 dark:text-slate-300">
-              <span className="material-symbols-outlined">menu</span>
-            </button>
-          </header>
+          </main>
 
-          <div className="flex-1 p-4 md:p-8 max-w-7xl mx-auto w-full">
-            {renderPage()}
+          {/* toasts */}
+          <div className="fixed bottom-6 right-6 z-50 flex flex-col gap-3">
+            {toasts.map(toast => (
+              <Toast key={toast.id} message={toast.message} type={toast.type} />
+            ))}
           </div>
-        </main>
-
-        {/* toasts */}
-        <div className="fixed bottom-6 right-6 z-50 flex flex-col gap-3">
-          {toasts.map(toast => (
-            <Toast key={toast.id} message={toast.message} type={toast.type} />
-          ))}
         </div>
-      </div>
+      </NavigationContext.Provider>
     </ToastContext.Provider>
   );
 }
